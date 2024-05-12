@@ -3,6 +3,8 @@ import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
 
+import java.util.concurrent.TimeUnit;
+
 public class HelloWorldTest {
 
     @Test
@@ -51,6 +53,58 @@ public class HelloWorldTest {
                 .andReturn();
 
         String location = response.getHeader("Location");
-        System.out.println(location);
+        int statusCode = 0;
+        
+        while (location != null) {
+            response = RestAssured
+                    .given()
+                    .redirects()
+                    .follow(false)
+                    .get(location)
+                    .andReturn();
+
+            statusCode = response.getStatusCode();
+            location = response.getHeader("Location");
+        }
+        System.out.println(statusCode);
+    }
+
+    @Test
+    public void testEx8() throws InterruptedException {
+        JsonPath response = RestAssured
+                .get("https://playground.learnqa.ru/ajax/api/longtime_job")
+                .jsonPath();
+
+        String token = response.get("token");
+        int seconds = response.get("seconds");
+
+        JsonPath responseStatusError = RestAssured
+                .given()
+                .queryParam("token", token)
+                .when()
+                .get("https://playground.learnqa.ru/ajax/api/longtime_job")
+                .jsonPath();
+
+        String statusNotReady = responseStatusError.get("status");
+
+        if(statusNotReady.equals("Job is NOT ready")){
+            TimeUnit.SECONDS.sleep(seconds);
+
+            JsonPath responseStatusSuccess = RestAssured
+                    .given()
+                    .queryParam("token", token)
+                    .when()
+                    .get("https://playground.learnqa.ru/ajax/api/longtime_job")
+                    .jsonPath();
+
+            String status = responseStatusSuccess.get("status");
+
+            if(status.equals("Job is ready")){
+                System.out.println(status);
+            }
+            else {
+                System.out.println(statusNotReady);
+            }
+        }
     }
 }
