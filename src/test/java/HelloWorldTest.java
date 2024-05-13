@@ -41,32 +41,29 @@ public class HelloWorldTest {
         System.out.println(location);
     }
 
-    // В разработке To-Do
+
     @Test
     public void testEx7(){
-        Response response = RestAssured
-                .given()
-                .redirects()
-                .follow(false)
-                .when()
-                .get("https://playground.learnqa.ru/api/long_redirect")
-                .andReturn();
-
-        String location = response.getHeader("Location");
+        int redirectCount = 0;
         int statusCode = 0;
+        String link = "https://playground.learnqa.ru/api/long_redirect";
         
-        while (location != null) {
-            response = RestAssured
+        while (statusCode != 200) {
+            Response response = RestAssured
                     .given()
                     .redirects()
                     .follow(false)
-                    .get(location)
+                    .when()
+                    .get(link)
                     .andReturn();
 
             statusCode = response.getStatusCode();
-            location = response.getHeader("Location");
+            link = response.getHeader("Location");
+            redirectCount++;
         }
-        System.out.println(statusCode);
+
+        System.out.println("Код ответа: " + statusCode);
+        System.out.println("Количество редиректов: " + redirectCount);
     }
 
     @Test
