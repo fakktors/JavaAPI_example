@@ -3,6 +3,7 @@ import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
 
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class HelloWorldTest {
@@ -41,7 +42,6 @@ public class HelloWorldTest {
         System.out.println(location);
     }
 
-
     @Test
     public void testEx7(){
         int redirectCount = 0;
@@ -59,7 +59,9 @@ public class HelloWorldTest {
 
             statusCode = response.getStatusCode();
             link = response.getHeader("Location");
-            redirectCount++;
+            if(statusCode == 301){
+                redirectCount++;
+            }
         }
 
         System.out.println("Код ответа: " + statusCode);
@@ -101,6 +103,56 @@ public class HelloWorldTest {
             }
             else {
                 System.out.println(statusNotReady);
+            }
+        }
+    }
+
+    @Test
+    public void testEx9()  {
+        String getPassword = "https://playground.learnqa.ru/ajax/api/get_secret_password_homework";
+        String checkCookie = "https://playground.learnqa.ru/ajax/api/check_auth_cookie";
+
+        List<String> passwordList = Arrays.asList(
+                "password","dragon","baseball","111111","iloveyou","master","sunshine",
+                "ashley","bailey","passw0rd","shadow","123456","123123","654321","superman","qazwsx","michael",
+                "football","12345678","qwerty","abc123","monkey","1234567","letmein","trustno1","jesus","ninja",
+                "mustang","password1","adobe123","admin","1234567890","photoshop[a]","1234","12345","princess",
+                "azerty","0","123456789","access","696969","batman","1qaz2wsx","login","qwertyuiop","solo","starwars",
+                "121212","flower","hottie","loveme","zaq1zaq1","hello","freedom","whatever","666666","!@#$%^&*",
+                "charlie","aa123456","donald","qwerty123","1q2w3e4r","555555","lovely","7777777","welcome","888888",
+                "123qwe","iloveyou"
+        );
+
+        Map<String, String> body = new HashMap<>();
+
+        for (String password : passwordList) {
+            body.put("login", "super_admin");
+            body.put("password", password);
+
+
+            Response responseToken = RestAssured
+                    .given()
+                    .body(body)
+                    .post(getPassword)
+                    .andReturn();
+
+            String responseCookie = responseToken.getCookie("auth_cookie");
+
+            Map<String, String> cookie = new HashMap<>();
+            cookie.put("auth_cookie", responseCookie);
+
+            Response responseCheck = RestAssured
+                    .given()
+                    .cookies(cookie)
+                    .get(checkCookie)
+                    .andReturn();
+
+            String checkMessage = responseCheck.asString();
+
+            if (checkMessage.equals("You are authorized")) {
+                System.out.println("You are authorized");
+                System.out.println("Correct password - " + password);
+                System.out.println(responseCheck.getStatusCode());
             }
         }
     }
