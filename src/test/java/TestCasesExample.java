@@ -9,7 +9,9 @@ public class TestCasesExample {
 
     String urlLongMethod = "https://playground.learnqa.ru/api/hello";
     String getCookieUrl = "https://playground.learnqa.ru/api/homework_cookie";
+    String getHeaderUrl = "https://playground.learnqa.ru/api/homework_header";
     String cookieForTest = "hw_value";
+    String headerForTest = "Some secret value";
 
     @Test
     public void testLongMethod(){
@@ -35,5 +37,17 @@ public class TestCasesExample {
         String getCookie = responseCookie.getCookie("HomeWork");
 
         assertEquals(cookieForTest, getCookie, "Unexpected cookie");
+    }
+
+    @Test
+    public void testHeaderValue(){
+
+        Response responseCookie = RestAssured
+                .get(getHeaderUrl)
+                .andReturn();
+
+        String getHeader = responseCookie.getHeader("X-Secret-Homework-Header");
+
+        assertEquals(headerForTest, getHeader, "Unexpected header");
     }
 }
