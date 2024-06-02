@@ -15,7 +15,6 @@ public class TestCasesExample {
 
     @Test
     public void testLongMethod(){
-
         JsonPath response = RestAssured
                 .given()
                 .queryParam("name", "Johny Production")
@@ -29,7 +28,6 @@ public class TestCasesExample {
 
     @Test
     public void testCookieValue(){
-
         Response responseCookie = RestAssured
                 .get(getCookieUrl)
                 .andReturn();
@@ -41,7 +39,6 @@ public class TestCasesExample {
 
     @Test
     public void testHeaderValue(){
-
         Response responseCookie = RestAssured
                 .get(getHeaderUrl)
                 .andReturn();
