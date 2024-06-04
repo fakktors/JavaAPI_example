@@ -56,7 +56,7 @@ public class UserEditTest extends BaseTestCase {
         Map<String, String> editData = new HashMap<>();
         editData.put("firstName", newName);
 
-        Response responseEditUser = apiCoreRequests
+        apiCoreRequests
                 .putEditUserRequest(url, "2",
                         this.getHeader(responseGetAuthAnother, "x-csrf-token"),
                         this.getCookie(responseGetAuthAnother, "auth_sid"),
