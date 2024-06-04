@@ -10,6 +10,14 @@ import java.util.Map;
 import static io.restassured.RestAssured.given;
 
 public class ApiCoreRequests {
+    @Step("Make a GET-request with id")
+    public Response makeGetRequest(String url, String id) {
+        return given()
+                .filter(new AllureRestAssured())
+                .get(url + id)
+                .andReturn();
+    }
+
     @Step("Make a GET-request with token and auth cookie")
     public Response makeGetRequest(String url, String token, String cookie) {
         return given()
@@ -17,6 +25,16 @@ public class ApiCoreRequests {
                 .header(new Header("x-csrf-token", token))
                 .cookie("auth_sid", cookie)
                 .get(url)
+                .andReturn();
+    }
+
+    @Step("Make a GET-request with id, token and auth cookie")
+    public Response makeGetRequest(String url, String id, String token, String cookie) {
+        return given()
+                .filter(new AllureRestAssured())
+                .header(new Header("x-csrf-token", token))
+                .cookie("auth_sid", cookie)
+                .get(url + id)
                 .andReturn();
     }
 
