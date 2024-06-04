@@ -3,8 +3,10 @@ package lib;
 import io.qameta.allure.Step;
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.http.Header;
+import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
@@ -62,6 +64,67 @@ public class ApiCoreRequests {
                 .filter(new AllureRestAssured())
                 .body(authData)
                 .post(url)
+                .andReturn();
+    }
+
+    @Step("Make a put-request with token")
+    public Response putEditUserRequest(String url, String userId, String header, String cookie,Map<String, String> editData) {
+        return
+                given()
+                        .header("x-csrf-token", header)
+                        .cookie("auth_sid", cookie)
+                        .body(editData)
+                        .put(url + userId)
+                        .andReturn();
+    }
+
+    @Step("Make a put-request jsonPath with token")
+    public JsonPath putEditUserJsonRequest(String url, String userId, String header, String cookie,Map<String, String> editData) {
+        return
+                given()
+                        .header("x-csrf-token", header)
+                        .cookie("auth_sid", cookie)
+                        .body(editData)
+                        .put(url + userId)
+                        .jsonPath();
+    }
+
+    @Step("Make a delete-request with token")
+    public Response deleteUserRequest(String url, String userId, String header, String cookie) {
+        return  given()
+                .header("x-csrf-token", header)
+                .cookie("auth_sid", cookie)
+                .delete(url + userId)
+                .andReturn();
+    }
+
+    @Step("Make a delete-request with token")
+    public JsonPath deleteUserJsonRequest(String url, String userId, String header, String cookie) {
+        return  given()
+                .header("x-csrf-token", header)
+                .cookie("auth_sid", cookie)
+                .delete(url + userId)
+                .jsonPath();
+    }
+
+    @Step("Make new user")
+    public JsonPath generateUserRequest(String url, Map<String, String> userData) {
+        return  given()
+                .body(userData)
+                .post(url)
+                .jsonPath();
+    }
+
+
+    @Step("AuthRequest")
+    public Response authRequest(String email, String password) {
+        Map<String, String> authDate = new HashMap<>();
+        authDate.put("email", email);
+        authDate.put("password", password);
+
+        return  given()
+                .body(authDate)
+                .post("https://playground.learnqa.ru/api/user/login")
                 .andReturn();
     }
 }
