@@ -43,6 +43,7 @@ public class UserAuthTest extends BaseTestCase {
 
     @Test
     @Description("This test successfully authorize user by email and password")
+    @Epic("Auth user")
     @DisplayName("Test positive auth user")
     public void testAuthUser() {
         Response responseCheckAuth = apiCoreRequests
@@ -56,6 +57,7 @@ public class UserAuthTest extends BaseTestCase {
     }
 
     @Description("This test checks authorization status w/o sending auth cookie or token")
+    @Epic("Auth user")
     @DisplayName("Test negative auth user")
     @ParameterizedTest
     @ValueSource(strings = {"cookie", "headers"})

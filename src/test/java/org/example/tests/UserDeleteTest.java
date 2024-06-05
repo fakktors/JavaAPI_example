@@ -1,6 +1,8 @@
 package org.example.tests;
 
+import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import lib.ApiCoreRequests;
@@ -12,6 +14,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
+@Epic("Delete cases")
+@Feature("Deletion")
 public class UserDeleteTest extends BaseTestCase {
 
     ApiCoreRequests apiCoreRequests = new ApiCoreRequests();
@@ -19,8 +23,9 @@ public class UserDeleteTest extends BaseTestCase {
     String url = "https://playground.learnqa.ru/api/user/";
 
     @Test
-    @Epic("Удаление пользователей")
-    @DisplayName("Удаление пользователя по ID 2")
+    @Description("The test attempts to delete a user who does not meet the deletion criteria")
+    @Epic("User Deletion")
+    @DisplayName("Delete user by ID 2")
     void testDeleteUser() {
         Response responseGetAuth = apiCoreRequests
                 .authRequest("vinkotov@example.com", "1234");
@@ -34,8 +39,9 @@ public class UserDeleteTest extends BaseTestCase {
     }
 
     @Test
-    @Epic("Удаление пользователей")
-    @DisplayName("Удаление созданного пользователя")
+    @Description("The test successfully deletes a newly created user")
+    @Epic("User Deletion")
+    @DisplayName("Delete created user")
     void testDeleteCreatedUser() {
         Map<String, String> userData = DataGenerator.getRegistrationData();
 
@@ -62,8 +68,9 @@ public class UserDeleteTest extends BaseTestCase {
     }
 
     @Test
-    @Epic("Удаление пользователей")
-    @DisplayName("Попытка удалить пользователя, будучи авторизованными другим пользователем")
+    @Description("The test checks an attempt to delete a user who does not belong to the authorized user")
+    @Epic("User Deletion")
+    @DisplayName("Attempt to delete a user while authenticated as another user")
     void testDeleteAnotherUser() {
         Map<String, String> userData = DataGenerator.getRegistrationData();
 

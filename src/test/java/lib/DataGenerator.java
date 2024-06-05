@@ -10,6 +10,7 @@ public class DataGenerator {
         String timestamp = new SimpleDateFormat("yyyyMMddHHmms").format(new Date());
         return "learnqa" + timestamp + "@gmail.com";
     }
+
     public static Map<String, String> getRegistrationData() {
         Map<String, String> data = new HashMap<>();
         data.put("email", DataGenerator.getRandomEmail());

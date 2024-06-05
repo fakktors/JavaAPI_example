@@ -1,6 +1,8 @@
 package org.example.tests;
 
+import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import lib.ApiCoreRequests;
@@ -13,6 +15,8 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 import java.util.Map;
 
+@Epic("Edit cases")
+@Feature("Editing")
 public class UserEditTest extends BaseTestCase {
 
     ApiCoreRequests apiCoreRequests = new ApiCoreRequests();
@@ -20,8 +24,9 @@ public class UserEditTest extends BaseTestCase {
     String url = "https://playground.learnqa.ru/api/user/";
 
     @Test
-    @Epic("Редактирование пользователя")
-    @DisplayName("Попытаемся изменить данные пользователя, будучи неавторизованными")
+    @Description("Cannot change data if not authorized")
+    @Epic("User Editing")
+    @DisplayName("Attempt to change user data while not authorized")
     void testEditWithoutAuth() {
         String newName = "new name";
         Map<String, String> editData = new HashMap<>();
@@ -40,8 +45,9 @@ public class UserEditTest extends BaseTestCase {
     }
 
     @Test
-    @Epic("Редактирование пользователя")
-    @DisplayName("Попытаемся изменить данные пользователя, будучи авторизованным другим пользователем")
+    @Description("Cannot change user data if the user does not belong to you")
+    @Epic("User Editing")
+    @DisplayName("Attempt to change user data while authenticated as another user")
     void testEditWithAnotherUser() {
         Map<String, String> userData = DataGenerator.getRegistrationData();
         apiCoreRequests.generateUserRequest(url, userData);
@@ -72,8 +78,9 @@ public class UserEditTest extends BaseTestCase {
     }
 
     @Test
-    @Epic("Редактирование пользователя")
-    @DisplayName("Попытаемся изменить email пользователя, будучи авторизованными тем же пользователем, на новый email без символа @")
+    @Description("Negative validation check for the email field when changing your data")
+    @Epic("User Editing")
+    @DisplayName("Attempt to change the user's email while authenticated as the same user to a new email without the @ symbol")
     void testEditWithWrongEmail() {
         Map<String, String> userData = DataGenerator.getRegistrationData();
 
@@ -106,8 +113,9 @@ public class UserEditTest extends BaseTestCase {
     }
 
     @Test
-    @Epic("Редактирование пользователя")
-    @DisplayName("Попытаемся изменить firstName пользователя, будучи авторизованными тем же пользователем, на очень короткое значение в один символ")
+    @Description("Negative validation check for changing the user's first name to a short name")
+    @Epic("User Editing")
+    @DisplayName("Attempt to change the user's first name while authenticated as the same user to a very short value of one character")
     void testEditFirstNameTooShort() {
         Map<String, String> userData = DataGenerator.getRegistrationData();
         JsonPath responseCreateAuth = apiCoreRequests
